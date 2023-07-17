@@ -8,8 +8,10 @@ export const useInvoiceStore = defineStore("invoiceStore", {
     actions: {
         async addInvoice(newObject) {
             axios.post('https://invoices-app-13063-default-rtdb.firebaseio.com/.json',
-                newObject)
-            console.log(this.invoices)
+                    newObject)
+                .then(() => {
+                    this.getInvoices()
+                })
         },
         async getInvoices() {
             axios.get('https://invoices-app-13063-default-rtdb.firebaseio.com/.json')

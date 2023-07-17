@@ -34,6 +34,12 @@
                 <option value="30days">Net 30 days</option>
                 <option value="60days">Net 60 days</option>
             </select>
+            <label for="invoiceStatus">Status</label>
+            <select name="invoiceStatus" id="invoiceStatus" v-model="invoiceStatus">
+                <option value="draft">Draft</option>
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+            </select>
             <label for="description">Project Description</label>
             <input type="description" name="description" id="description" v-model="description">
         </section>
@@ -45,9 +51,12 @@
                 <label for="quantity">Qty</label>
                 <input type="number" name="quantity" id="quantity" v-model="item.quantity">
                 <label for="price">Price</label>
-                <input type="text" name="price" id="price" v-model="item.price">
+                <input type="number" name="price" id="price" v-model="item.price">
+                {{ item.result }}
                 <button @click.prevent="removeLine(item.id)">IMG</button>
             </div>
+            {{ total }}
+            {{ totalItem }}
             <button @click.prevent="addItemLine">+ Add New Item</button>
             <br><br><br><br><br><br>
         </section>
@@ -56,7 +65,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import { useInvoiceStore } from '../stores/InvoiceStore'
 export default {
     setup() {
@@ -76,15 +85,19 @@ export default {
         const paymentTerms = ref('');
         const description = ref('');
         const itemName = ref('');
-        const quantity = ref(null);
-        const price = ref('');
-        //--------------------//
+        const quantity = ref(0);
+        const price = ref(0);
+        const invoiceStatus = ref('pending');
+        const result = ref(0);
+        let total = ref(0)
+
         // Premier item près installé pour indiquer au client que l'on doit renseigner le détail de commande ici
         const itemArray = ref([{
             id: Math.floor(Math.random() * 100), // Génère un ID unique (ceci est juste un exemple)
             itemName: itemName.value,
             quantity: quantity.value,
-            price: price.value
+            price: price.value,
+            result: result.value,
         },
         ])
         //--------------------//
@@ -94,16 +107,39 @@ export default {
             const item = {
                 id: Math.floor(Math.random() * 100), // Génère un ID unique (ceci est juste un exemple)
                 itemName: '',
-                quantity: '',
-                price: ''
+                quantity: quantity.value,
+                price: price.value,
+                result: result.value,
+                total: totalItem
             };
             itemArray.value.push(item);
         };
 
+        // Watch pour mettre à jour les valeurs de result pour chaque nouvel item 
+        watchEffect(() => {
+            for (let i = 0; i < itemArray.value.length; i++) {
+                itemArray.value[i].result = itemArray.value[i].quantity * itemArray.value[i].price; // Effectue la multiplication
+            }
+        });
+
+        // Boucle pour récupérer toutes les valeurs de itemArray.value[i].result pour ensuite
+        // Appliquer un reduce qui permet de faire l'accumulation de tous les prix un après l'autre
+        const totalItem = computed(() => {
+            const totalItemPrice = []
+            for (let i = 0; i < itemArray.value.length; i++) {
+                totalItemPrice.push(itemArray.value[i].result)
+            }
+            return totalItemPrice.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+        });
+
+
+
         // Remove l'item selon son id et met à jour le tableau itemArray
-        const removeLine = (id) => {            
+        const removeLine = (id) => {
             itemArray.value = itemArray.value.filter((i) => i.id !== id);
         }
+
         // Nous créons ensuite la fonction qui va être appelé au click et qui va permettre d'envoyer
         // un nouvel objet vers le store (=> puis BDD) 
         const newInvoice = () => {
@@ -122,14 +158,16 @@ export default {
                 date: date.value,
                 paymentTerms: paymentTerms.value,
                 description: description.value,
-                itemListing: itemArray.value
+                itemListing: itemArray.value,
+                invoiceStatus: invoiceStatus.value,
+                total: totalItem.value
             }
             store.addInvoice(newObject)
         }
         return {
             randomName, newInvoice, addItemLine, streetAdress, city, postCode, country,
             cName, email, cStreet, cCity, cPostCode, cCountry, date, paymentTerms,
-            description, itemName, quantity, price, itemArray,removeLine
+            description, itemName, quantity, price, itemArray, removeLine, invoiceStatus, result, totalItem, total
         }
     }
 }

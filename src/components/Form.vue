@@ -34,11 +34,11 @@
                 <option value="30days">Net 30 days</option>
                 <option value="60days">Net 60 days</option>
             </select>
-            <label for="invoiceStatus">Status</label>
-            <select name="invoiceStatus" id="invoiceStatus" v-model="invoiceStatus">
-                <option value="draft">Draft</option>
-                <option value="pending">Pending</option>
-                <option value="paid">Paid</option>
+            <label for="status">Status</label>
+            <select name="status" id="status" v-model="status">
+                <option value="Draft">Draft</option>
+                <option value="Pending">Pending</option>
+                <option value="Paid">Paid</option>
             </select>
             <label for="description">Project Description</label>
             <input type="description" name="description" id="description" v-model="description">
@@ -87,7 +87,7 @@ export default {
         const itemName = ref('');
         const quantity = ref(0);
         const price = ref(0);
-        const invoiceStatus = ref('pending');
+        const status = ref('Pending');
         const result = ref(0);
         let total = ref(0)
 
@@ -159,7 +159,7 @@ export default {
                 paymentTerms: paymentTerms.value,
                 description: description.value,
                 itemListing: itemArray.value,
-                invoiceStatus: invoiceStatus.value,
+                status: status.value,
                 total: totalItem.value
             }
             store.addInvoice(newObject)
@@ -167,7 +167,7 @@ export default {
         return {
             randomName, newInvoice, addItemLine, streetAdress, city, postCode, country,
             cName, email, cStreet, cCity, cPostCode, cCountry, date, paymentTerms,
-            description, itemName, quantity, price, itemArray, removeLine, invoiceStatus, result, totalItem, total
+            description, itemName, quantity, price, itemArray, removeLine, status, result, totalItem, total
         }
     }
 }

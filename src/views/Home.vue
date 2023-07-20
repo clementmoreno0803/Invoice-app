@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <Teleport to="body">
-      <Form class="outOfCanva" :class="{ active: seeForm }"></Form>
+      <div class="backdrop" :class="{ active: outOfCanva }"  @click="outOfCanva = false">
+        <Form class="outOfCanva" @click.stop :class="{ active: outOfCanva }" @open-form="outOfCanva = true"></Form>
+      </div>
     </Teleport>
     <h1>Invoices</h1>
     <h2>There is {{ store.totalInvoices }} total invoices</h2>
@@ -11,10 +13,12 @@
       <option value="Pending">Pending</option>
       <option value="Draft">Draft</option>
     </select>
-    <button @click="toggleClass">Create an invoice</button>
+    <button @click="outOfCanva = true">Create an invoice</button>
+    
     <div v-for="invoice in filteredInvoices" :key="invoice.id">
-      <InvoiceDetailVue :randomName="invoice.randomName" :date="invoice.date" :clientName="invoice.clientName"
-        :total="invoice.total" :status="invoice.status" />
+      <router-link :to="`/${invoice.id}`">
+        <InvoiceDetailVue :invoice="invoice" />
+      </router-link>
     </div>
   </div>
 </template>
@@ -30,43 +34,66 @@ export default {
   components: {
     Form,
     Teleport,
-    InvoiceDetailVue
+    InvoiceDetailVue,
   },
   setup() {
     const store = useInvoiceStore();
     const filterInvoice = ref('');
-    const seeForm = ref(false)
+    const outOfCanva = ref(false);
 
-    const toggleClass = () => seeForm.value = !seeForm.value
+    const toggleClass = () => outOfCanva.value = !outOfCanva.value
     const filteredInvoices = computed(() => store.filteredInvoices(filterInvoice.value));
 
     onMounted(() => {
       store.getInvoices()
     })()
 
-    return { store, filterInvoice, filteredInvoices, seeForm, toggleClass }
+    return { store, filterInvoice, filteredInvoices, outOfCanva, toggleClass }
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.backdrop {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.09);
+  height: auto;
+  top: 0;
+  left: 0;
+  width: 0;
+  transform: translateX(-100vw);
+  transition: all 0.3s ease-in;
+
+  &.active {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 9;
+    backdrop-filter: blur(1px);
+    cursor: pointer;
+    transform: translateX(0);
+    transition: all 0.3s ease-in-out;
+  }
+}
+
 .outOfCanva {
-  position: fixed;
   transform: translateX(-100vw);
   background: rgb(220, 220, 243);
   z-index: 99;
-  height: 100%;
   top: 0;
-  width: 60%;
-  transition: all 0.4s ease-out;
-}
+  bottom: 0;
+  width: 35%;
+  padding: 40px;
+  height: 100%;
+  transition: all 0.9s ease-in;
+  cursor: default;
 
-.outOfCanva.active {
-  position: fixed;
-  transform: translateX(0);
-  z-index: 99;
-  height: 100%;
-  top: 0;
-  width: 60%;
-  transition: all 0.4s ease-out;
+  &.active {
+    transform: translateX(0);
+    background: rgb(220, 220, 243);
+    z-index: 99;
+    top: 0;
+    bottom: 0;
+    transition: all 0.9s ease-in-out;
+  }
 }
 </style>

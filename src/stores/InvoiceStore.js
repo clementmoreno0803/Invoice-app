@@ -25,18 +25,27 @@ export const useInvoiceStore = defineStore("invoiceStore", {
     actions: {
         async addInvoice(newObject) {
             await axios.post('https://invoices-app-13063-default-rtdb.firebaseio.com/.json',
-                    newObject)
-                .then(() => {
-                    this.getInvoices()
-                })
+                newObject)
+
+            .then(() => {
+                this.getInvoices()
+            })
         },
         async getInvoices() {
             await axios.get('https://invoices-app-13063-default-rtdb.firebaseio.com/.json')
-                .then(response => {
-                    // console.log(response.data)
-                    // this.invoices.push(response.data)
-                    this.invoices = Object.values(response.data)
+                .then((response) => {
+                    const data = response.data;
+
+                    const invoices = Object.keys(data).map((keyName) => ({
+                        keyName,
+                        ...data[keyName],
+                    }));
+                    this.invoices = invoices;
                 })
-        }
+        },
+        async changeStatusInvoice(invoice) {
+            invoice.status = 'Paid'
+            await axios.put(`https://invoices-app-13063-default-rtdb.firebaseio.com/${invoice.keyName}.json`, invoice)
+        },
     }
 })

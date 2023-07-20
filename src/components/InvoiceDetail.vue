@@ -2,25 +2,25 @@
   <table class="clientCard">
     <tr>
       <td>
-        <h3>#{{ randomName }}</h3>
+        <h3>#{{ invoice.randomName }}</h3>
       </td>
       <td>
-        <h3>Due to {{ date }}</h3>
+        <h3>Due to {{ invoice.date }}</h3>
       </td>
       <td>
-        <h3>{{ clientName }}</h3>
+        <h3>{{ invoice.clientName }}</h3>
       </td>
       <td>
-        <h3>  {{ total }} €</h3>
+        <h3>  {{ invoice.total }} €</h3>
       </td>
-      <td><span :class="getColorClass(status)">{{ status }}</span></td>
+      <td><span :class="getColorClass(invoice.status)">{{ invoice.status }}</span></td>
     </tr>
   </table>
 </template>
 
 <script>
 export default {
-  props: ["randomName", "date", "clientName", "total", "status"],
+  props: ["invoice"],
   setup() {
     const getColorClass = (status) => {
       if (status === 'Paid') {

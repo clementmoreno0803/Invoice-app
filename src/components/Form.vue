@@ -3,62 +3,103 @@
         <h2>Invoice #{{ randomName }}</h2>
         <section>
             <h4>Bill From</h4>
-            <label for="street">Street Adress</label>
-            <input type="text" name="street" id="street" v-model="streetAdress">
-            <label for="city">city</label>
-            <input type="text" name="city" id="city" v-model="city">
-            <label for="PostCode">PostCode </label>
-            <input type="text" name="PostCode" id="PostCode" v-model="postCode">
-            <label for="Country">Country</label>
-            <input type="text" name="Country" id="Country" v-model="country">
+            <div class="styling-input">
+                <label for="street">Street Adress</label>
+                <input type="text" name="street" id="street" v-model="streetAdress" required>
+            </div>
+            <div class="adress-info">
+                <div class="styling-input">
+                    <label for="city">city</label>
+                    <input type="text" name="city" id="city" v-model="city" required>
+                </div>
+                <div class="styling-input">
+                    <label for="PostCode">PostCode </label>
+                    <input type="text" name="PostCode" id="PostCode" v-model="postCode" required>
+                </div>
+                <div class="styling-input">
+                    <label for="Country">Country</label>
+                    <input type="text" name="Country" id="Country" v-model="country" required>
+                </div>
+            </div>
         </section>
         <section>
             <h4>Bill To</h4>
-            <label for="cName">Client's Name</label>
-            <input type="text" name="cName" id="cName" v-model="cName">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" v-model="email">
-            <label for="cStreet">Street Adress</label>
-            <input type="text" name="cStreet" id="cStreet" v-model="cStreet">
-            <label for="cCity">City </label>
-            <input type="text" name="cCity" id="cCity" v-model="cCity">
-            <label for="cPostCode">PostCode </label>
-            <input type="text" name="cPostCode" id="cPostCode" v-model="cPostCode">
-            <label for="cCountry">Country</label>
-            <input type="text" name="cCountry" id="cCountry" v-model="cCountry">
-            <label for="date">Invoice Date</label>
-            <input type="date" name="date" id="date" v-model="date">
-            <label for="paymentTerms">paymentTerms</label>
+            <div class="styling-input">
+                <label for="cName">Client's Name</label>
+                <input type="text" name="cName" id="cName" v-model="cName" required>
+            </div>
+            <div class="styling-input">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" v-model="email" required>
+            </div>
+            <div class="styling-input">
+                <label for="cStreet">Street Adress</label>
+                <input type="text" name="cStreet" id="cStreet" v-model="cStreet">
+            </div>
+            <div class="adress-info">
+                <div class="styling-input">
+                    <label for="cCity">City </label>
+                    <input type="text" name="cCity" id="cCity" v-model="cCity">
+                </div>
+                <div class="styling-input">
+                    <label for="cPostCode">PostCode </label>
+                    <input type="text" name="cPostCode" id="cPostCode" v-model="cPostCode">
+                </div>
+                <div class="styling-input">
+                    <label for="cCountry">Country</label>
+                    <input type="text" name="cCountry" id="cCountry" v-model="cCountry">
+                </div>
+            </div>
+            <div class="adress-info">
 
-            <select name="paymentTerms" id="paymentTerms" v-model="paymentTerms">
-                <option value="30days">Net 30 days</option>
-                <option value="60days">Net 60 days</option>
-            </select>
-            <label for="status">Status</label>
-            <select name="status" id="status" v-model="status">
-                <option value="Draft">Draft</option>
-                <option value="Pending">Pending</option>
-                <option value="Paid">Paid</option>
-            </select>
-            <label for="description">Project Description</label>
-            <input type="description" name="description" id="description" v-model="description">
+                <div class="styling-input">
+                    <label for="date">Invoice Date</label>
+                    <input type="date" name="date" id="date" v-model="date" required>
+                </div>
+                <div class="styling-input">
+                    <label for="paymentTerms">paymentTerms</label>
+                    <select name="paymentTerms" id="paymentTerms" v-model="paymentTerms">
+                        <option value="30days">Net 30 days</option>
+                        <option value="60days">Net 60 days</option>
+                    </select>
+                </div>
+                <div class="styling-input">
+
+                    <label for="status">Status</label>
+                    <select name="status" id="status" v-model="status">
+                        <option value="Draft">Draft</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Paid">Paid</option>
+                    </select>
+                </div>
+            </div>
+            <div class="styling-input">
+                <label for="description">Project Description</label>
+                <input type="description" name="description" id="description" v-model="description">
+            </div>
         </section>
         <section>
             <h3>Item List</h3>
-            <div v-for="item in itemArray" :key="item.id">
-                <label for="iName">Item Name</label>
-                <input type="text" name="iName" id="iName" v-model="item.itemName">
-                <label for="quantity">Qty</label>
-                <input type="number" name="quantity" id="quantity" v-model="item.quantity">
-                <label for="price">Price</label>
-                <input type="number" name="price" id="price" v-model="item.price">
-                {{ item.result }}
-                <button @click.prevent="removeLine(item.id)">IMG</button>
-            </div>
-            {{ total }}
-            {{ totalItem }}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Qty.</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in itemArray" :key="item.id">
+                        <td><input type="text" name="iName" id="iName" v-model="item.itemName" required></td>
+                        <td><input type="number" name="quantity" id="quantity" v-model="item.quantity" required></td>
+                        <td><input type="number" name="price" id="price" v-model="item.price" required></td>
+                        <td>{{ item.result + '€' }}</td>
+                        <td><button @click.prevent="removeLine(item.id)">IMG</button></td>
+                    </tr>
+                </tbody>
+            </table>
             <button @click.prevent="addItemLine">+ Add New Item</button>
-            <br><br><br><br><br><br>
         </section>
         <button @submit.prevent="newInvoice">Save Changes</button>
     </form>
@@ -144,6 +185,7 @@ export default {
         // un nouvel objet vers le store (=> puis BDD) 
         const newInvoice = () => {
             const newObject = {
+                id: Math.floor(Math.random()*100),
                 randomName: randomName,
                 streetAdress: streetAdress.value,
                 city: city.value,
@@ -156,12 +198,32 @@ export default {
                 cPostCode: cPostCode.value,
                 cCountry: cCountry.value,
                 date: date.value,
+                itemName: '',
+                quantity: quantity.value,
+                price: price.value,
+                result: result.value,
                 paymentTerms: paymentTerms.value,
                 description: description.value,
                 itemListing: itemArray.value,
                 status: status.value,
                 total: totalItem.value
             }
+            // streetAdress.value = '';
+            // city.value = '';
+            // postCode.value = '';
+            // country.value = '';
+            // cName.value = '';
+            // email.value = '';
+            // cStreet.value = '';
+            // cCity.value = '';
+            // cPostCode.value = '';
+            // cCountry.value = '';
+            // date.value = '';
+            // paymentTerms.value = '';
+            // description.value = '';
+            // itemName.value = '';
+            // quantity.value = 0;
+            // price.value = 0;
             store.addInvoice(newObject)
         }
         return {
@@ -173,4 +235,27 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.styling-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10px;
+
+    input,
+    select {
+        height: 34px;
+    }
+}
+
+.adress-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .styling-input {
+        // margin-right: 10px;
+        width: 30%;
+    }
+}
+</style>
